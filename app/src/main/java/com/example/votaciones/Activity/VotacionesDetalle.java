@@ -48,16 +48,16 @@ public class VotacionesDetalle extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
     private void GetCandidatos() {
-        Call<CandidatoModel> call = Api.instance().GetCandidatos(Id_Votacion);
-        call.enqueue(new Callback<CandidatoModel>() {
+        Call<List<CandidatoModel>> call = Api.instance().GetCandidatos();
+        call.enqueue(new Callback<List<CandidatoModel>>() {
             @Override
-            public void onResponse(Call<CandidatoModel> call, Response<CandidatoModel> response) {
-                CandidatoAdapter candidatoAdapter = new CandidatoAdapter(Collections.singletonList(response.body()));
+            public void onResponse(Call<List<CandidatoModel>> call, Response<List<CandidatoModel>> response) {
+                CandidatoAdapter candidatoAdapter = new CandidatoAdapter(response.body());
                 recyclerView.setAdapter(candidatoAdapter);
             }
 
             @Override
-            public void onFailure(Call<CandidatoModel> call, Throwable t) {
+            public void onFailure(Call<List<CandidatoModel>> call, Throwable t) {
 
             }
         });

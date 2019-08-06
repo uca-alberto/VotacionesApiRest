@@ -13,9 +13,6 @@ import com.example.votaciones.Api.Api;
 import com.example.votaciones.Model.UsuariosModel;
 import com.example.votaciones.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,37 +33,32 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SignIn(User.getText().toString(),Pass.getText().toString());
-                startActivity(new Intent(Login.this,Votaciones.class));
-                //Toast.makeText(Login.this, "Si funciina el boton", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void SignIn(final String Name, final String Carnet){
-        Call<List<UsuariosModel>> call = Api.instance().GetUser();
-        call.enqueue(new Callback<List<UsuariosModel>>() {
+    public void SignIn( String Name,String Carnet){
+
+        UsuariosModel usuariosModel = new UsuariosModel();
+        usuariosModel.setUsuario(Name);
+        usuariosModel.setClave(Carnet);
+        
+        Call<UsuariosModel> call = Api.instance().Login(usuariosModel);
+        call.enqueue(new Callback<UsuariosModel>() {
             @Override
-            public void onResponse(Call<List<UsuariosModel>> call, Response<List<UsuariosModel>> response) {
-               /* ArrayList<String> myarraylist = new ArrayList<>();
-                myarraylist.add(response.body().toString());*/
-                List<UsuariosModel> usuariosModel;
-                usuariosModel = response.body();
-
-
-
-                List<UsuariosModel> user = response.body();
-                for (int i = 0; i < usuariosModel.size(); i++)
-                {
-
-                    //Toast.makeText(Login.this, "USUARIO:"+usuariosModel.toString(), Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<UsuariosModel> call, Response<UsuariosModel> response) {
+                if(response.body()!=null){
+                    Toast.makeText(Login.this, "Usuario Correcto", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Login.this,Votaciones.class));
+                }else {
+                    Toast.makeText(Login.this, "Usuario Incorrecto", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<UsuariosModel>> call, Throwable t) {
+            public void onFailure(Call<UsuariosModel> call, Throwable t) {
 
             }
         });
-
     }
 }

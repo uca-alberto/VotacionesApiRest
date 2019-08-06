@@ -19,10 +19,10 @@ public interface ApiInterface {
     @GET("usuarios")
     Call<List<UsuariosModel>> GetUser();
 
-    @GET("estudiantes/{ID}")
-    Call<CandidatoModel> GetCandidatos(@Path("ID") String id);
+    @GET("candidatos")
+    Call<List<CandidatoModel>> GetCandidatos();
 
-    @POST("usuarios")
+    @POST("login")
     Call<UsuariosModel> Login(@Body UsuariosModel usuariosModel);
 
    /* @PUT("mercados/{id}")
