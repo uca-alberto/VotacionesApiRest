@@ -6,19 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.example.votaciones.Adapter.VotacionesAdapter;
-import com.example.votaciones.Api.Api;
-import com.example.votaciones.Model.VotacionesModel;
+import com.example.votaciones.Model.RespaldoListas;
 import com.example.votaciones.R;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Votaciones extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -29,7 +21,7 @@ public class Votaciones extends AppCompatActivity {
         setContentView(R.layout.activity_votaciones);
         initViews();
         configureRecyclerView();
-        GetUser();
+        ListarVotacionesRecycler();
     }
     private void initViews() {
         recyclerView= findViewById(R.id.recycler);
@@ -37,28 +29,17 @@ public class Votaciones extends AppCompatActivity {
     private void configureRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-    public void GetUser(){
+    public void ListarVotacionesRecycler(){
 
-        Call<List<VotacionesModel>> call = Api.instance().GetVotaciones();
-        call.enqueue(new Callback<List<VotacionesModel>>() {
+        VotacionesAdapter votacionesAdapter = new VotacionesAdapter(RespaldoListas.Instancia().ObtenerVotaciones());
+        recyclerView.setAdapter(votacionesAdapter);
+
+        votacionesAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<List<VotacionesModel>> call, final Response<List<VotacionesModel>> response) {
-                Log.i("RESPUESTA", String.valueOf(response.body()));
-                VotacionesAdapter votacionesAdapter = new VotacionesAdapter(response.body());
-                recyclerView.setAdapter(votacionesAdapter);
-                votacionesAdapter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(Votaciones.this, VotacionesDetalle.class)
-                                .putExtra("ID_VOTACION",response.body().
-                                        get(recyclerView.getChildAdapterPosition(view)).getId()).putExtra("ID_USUARIO",User));
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<List<VotacionesModel>> call, Throwable t) {
-
+            public void onClick(View view) {
+                startActivity(new Intent(Votaciones.this, VotacionesDetalle.class)
+                        .putExtra("ID_VOTACION",RespaldoListas.Instancia().ObtenerVotaciones().
+                                get(recyclerView.getChildAdapterPosition(view)).getId()).putExtra("ID_USUARIO",User));
             }
         });
     }

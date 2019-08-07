@@ -11,8 +11,10 @@ import android.widget.Toast;
 import com.example.votaciones.Adapter.CandidatoAdapter;
 import com.example.votaciones.Api.Api;
 import com.example.votaciones.Model.CandidatoModel;
+import com.example.votaciones.Model.RespaldoListas;
 import com.example.votaciones.R;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,18 +50,16 @@ public class VotacionesDetalle extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
     private void GetCandidatos() {
-        Call<List<CandidatoModel>> call = Api.instance().GetCandidatos();
-        call.enqueue(new Callback<List<CandidatoModel>>() {
-            @Override
-            public void onResponse(Call<List<CandidatoModel>> call, Response<List<CandidatoModel>> response) {
-                CandidatoAdapter candidatoAdapter = new CandidatoAdapter(response.body());
-                recyclerView.setAdapter(candidatoAdapter);
+        ArrayList<CandidatoModel> candidatosFiltrados = new ArrayList<>();
+        for(CandidatoModel c : RespaldoListas.Instancia().ObtenerCandidatos())
+        {
+            if(c.getIdVotacion().equals(Id_Votacion))
+            {
+                candidatosFiltrados.add(c);
             }
+        }
 
-            @Override
-            public void onFailure(Call<List<CandidatoModel>> call, Throwable t) {
-
-            }
-        });
+        CandidatoAdapter candidatoAdapter = new CandidatoAdapter(candidatosFiltrados);
+        recyclerView.setAdapter(candidatoAdapter);
     }
 }

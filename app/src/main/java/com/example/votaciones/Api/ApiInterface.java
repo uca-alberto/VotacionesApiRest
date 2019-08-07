@@ -1,6 +1,7 @@
 package com.example.votaciones.Api;
 
 import com.example.votaciones.Model.CandidatoModel;
+import com.example.votaciones.Model.EstudianteModel;
 import com.example.votaciones.Model.UsuariosModel;
 import com.example.votaciones.Model.VotacionesModel;
 
@@ -17,10 +18,13 @@ public interface ApiInterface {
     Call<List<VotacionesModel>> GetVotaciones();
 
     @GET("usuarios")
-    Call<List<UsuariosModel>> GetUser();
+    Call<List<UsuariosModel>> GetUsers();
 
     @GET("candidatos")
     Call<List<CandidatoModel>> GetCandidatos();
+
+    @GET("estudiantes")
+    Call<List<EstudianteModel>> GetEstudiantes();
 
     @POST("login")
     Call<UsuariosModel> Login(@Body UsuariosModel usuariosModel);

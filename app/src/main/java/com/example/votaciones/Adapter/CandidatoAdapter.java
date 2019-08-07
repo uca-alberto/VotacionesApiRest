@@ -9,19 +9,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.votaciones.Model.CandidatoModel;
+import com.example.votaciones.Model.EstudianteModel;
+import com.example.votaciones.Model.RespaldoListas;
 import com.example.votaciones.Model.VotacionesModel;
 import com.example.votaciones.R;
 
 import java.util.List;
 
 public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.ViewHolder> implements View.OnClickListener {
+    private List<EstudianteModel> estudiantesLista = RespaldoListas.Instancia().ObtenerEstudiantes();
     private List<CandidatoModel> candidatoModels;
     private View.OnClickListener listener;
     public CandidatoAdapter(List<CandidatoModel>candidatoModelList)
     {
         this.candidatoModels = candidatoModelList;
     }
-
 
     @NonNull
     @Override
@@ -35,7 +37,15 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CandidatoModel candidatoModel = candidatoModels.get(position);
-        holder.NOMBRE.setText(candidatoModel.getNombre());
+
+        for(EstudianteModel e : this.estudiantesLista){
+            if(e.getId().equals(candidatoModel.getIdEstudiante()))
+            {
+                holder.NOMBRE.setText(e.getNombreCompleto());
+                break;
+            }
+        }
+
         holder.VOTOS.setText(candidatoModel.getVotosObtenidos());
     }
 

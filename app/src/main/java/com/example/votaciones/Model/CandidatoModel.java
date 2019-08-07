@@ -1,7 +1,7 @@
 package com.example.votaciones.Model;
 
 public class CandidatoModel {
-    String Id,Nombre,IdVotacion,VotosObtenidos;
+    String Id,IdEstudiante,IdVotacion,VotosObtenidos;
 
     public String getId() {
         return Id;
@@ -11,12 +11,12 @@ public class CandidatoModel {
         Id = id;
     }
 
-    public String getNombre() {
-        return Nombre;
+    public String getIdEstudiante() {
+        return IdEstudiante;
     }
 
-    public void setNombre(String nombre) {
-        Nombre = nombre;
+    public void setIdEstudiante(String idEstudiante) {
+        IdEstudiante = idEstudiante;
     }
 
     public String getIdVotacion() {
