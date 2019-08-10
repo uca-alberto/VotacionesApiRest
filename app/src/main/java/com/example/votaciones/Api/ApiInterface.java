@@ -11,6 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
@@ -28,6 +29,9 @@ public interface ApiInterface {
 
     @POST("login")
     Call<UsuariosModel> Login(@Body UsuariosModel usuariosModel);
+
+    @PUT("candidatos/{id}")
+    Call<CandidatoModel> PutCandidato(@Path("id") String id,@Body CandidatoModel candidatoModel);
 
    /* @PUT("mercados/{id}")
     Call<MarketModel> update(@Path("id") String id,@Body MarketModel marketModel);

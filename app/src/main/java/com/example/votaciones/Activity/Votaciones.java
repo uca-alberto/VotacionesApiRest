@@ -39,7 +39,8 @@ public class Votaciones extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(Votaciones.this, VotacionesDetalle.class)
                         .putExtra("ID_VOTACION",RespaldoListas.Instancia().ObtenerVotaciones().
-                                get(recyclerView.getChildAdapterPosition(view)).getId()).putExtra("ID_USUARIO",User));
+                                get(recyclerView.getChildAdapterPosition(view)).getId()).putExtra("ID_USUARIO",User)
+                .putExtra("DESCRIPCION",RespaldoListas.Instancia().ObtenerVotaciones().get(recyclerView.getChildAdapterPosition(view)).getDescripcion()));
             }
         });
     }

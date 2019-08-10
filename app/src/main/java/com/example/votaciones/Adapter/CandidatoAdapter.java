@@ -17,8 +17,8 @@ import com.example.votaciones.R;
 import java.util.List;
 
 public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.ViewHolder> implements View.OnClickListener {
-    private List<EstudianteModel> estudiantesLista = RespaldoListas.Instancia().ObtenerEstudiantes();
-    private List<CandidatoModel> candidatoModels;
+    public List<EstudianteModel> estudiantesLista = RespaldoListas.Instancia().ObtenerEstudiantes();
+    public List<CandidatoModel> candidatoModels;
     private View.OnClickListener listener;
     public CandidatoAdapter(List<CandidatoModel>candidatoModelList)
     {
@@ -41,7 +41,7 @@ public class CandidatoAdapter extends RecyclerView.Adapter<CandidatoAdapter.View
         for(EstudianteModel e : this.estudiantesLista){
             if(e.getId().equals(candidatoModel.getIdEstudiante()))
             {
-                holder.NOMBRE.setText(e.getNombreCompleto());
+              holder.NOMBRE.setText(e.getNombreCompleto());
                 break;
             }
         }
