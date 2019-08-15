@@ -8,12 +8,12 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/iv_photo"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@mipmap/user"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
     <TextView
-        android:textSize="12dp"
+        android:textSize="20dp"
         android:layout_toRightOf="@id/iv_photo"
         android:layout_marginTop="10dp"
         android:id="@+id/NOMBRE"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content" />
     <TextView
         android:layout_below="@id/NOMBRE"
-        android:textSize="12dp"
+        android:textSize="20dp"
         android:layout_toRightOf="@id/iv_photo"
         android:layout_marginTop="10dp"
         android:id="@+id/VOTOS"

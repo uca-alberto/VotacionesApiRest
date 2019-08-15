@@ -19,6 +19,7 @@ import com.example.votaciones.Adapter.CandidatoAdapter;
 import com.example.votaciones.Api.Api;
 import com.example.votaciones.Model.CandidatoModel;
 import com.example.votaciones.Model.RespaldoListas;
+import com.example.votaciones.Model.VotosModel;
 import com.example.votaciones.R;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class VotacionesDetalle extends AppCompatActivity {
     TextView codigo;
     SwipeRefreshLayout refreshLayout;
 
+    private  int contador=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,37 +57,8 @@ public class VotacionesDetalle extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Call<List<CandidatoModel>> call = Api.instance().GetCandidatos();
-                call.enqueue(new Callback<List<CandidatoModel>>() {
-                    @Override
-                    public void onResponse(Call<List<CandidatoModel>> call, Response<List<CandidatoModel>> response) {
-                        final ArrayList<CandidatoModel> candidatosFiltrados = new ArrayList<>();
-                        for(CandidatoModel c : response.body())
-                        {
-                            if(c.getIdVotacion().equals(Id_Votacion))
-                            {
-                                candidatosFiltrados.add(c);
-                            }
-                        }
-                        final CandidatoAdapter candidatoAdapter = new CandidatoAdapter(candidatosFiltrados);
-                        recyclerView.setAdapter(candidatoAdapter);
-                        candidatoAdapter.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ConfirmacionDialog(candidatoAdapter.estudiantesLista.get(recyclerView.getChildAdapterPosition(view)).getNombreCompleto(),
-                                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getId(),
-                                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdEstudiante(),
-                                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdVotacion(),
-                                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getVotosObtenidos());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<CandidatoModel>> call, Throwable t) {
-
-                    }
-                });
+                RespaldoListas.Instancia().CargarListas();
+                GetCandidatos();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -95,12 +68,15 @@ public class VotacionesDetalle extends AppCompatActivity {
             }
         });
     }
+
     private void initViews() {
         recyclerView= findViewById(R.id.recycler1);
     }
+
     private void configureRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
     private void GetCandidatos() {
         final ArrayList<CandidatoModel> candidatosFiltrados = new ArrayList<>();
         for(CandidatoModel c : RespaldoListas.Instancia().ObtenerCandidatos())
@@ -113,16 +89,23 @@ public class VotacionesDetalle extends AppCompatActivity {
 
         final CandidatoAdapter candidatoAdapter = new CandidatoAdapter(candidatosFiltrados);
         recyclerView.setAdapter(candidatoAdapter);
-        candidatoAdapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConfirmacionDialog(candidatoAdapter.estudiantesLista.get(recyclerView.getChildAdapterPosition(view)).getNombreCompleto(),
-                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getId(),
-                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdEstudiante(),
-                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdVotacion(),
-                        candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getVotosObtenidos());
-            }
-        });
+        if (contador ==0){
+            Toast.makeText(this, "Tines un voto", Toast.LENGTH_SHORT).show();
+            contador = contador+1;
+            candidatoAdapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ConfirmacionDialog(candidatoAdapter.estudiantesLista.get(recyclerView.getChildAdapterPosition(view)).getNombreCompleto(),
+                            candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getId(),
+                            candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdEstudiante(),
+                            candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getIdVotacion(),
+                            candidatosFiltrados.get(recyclerView.getChildAdapterPosition(view)).getVotosObtenidos());
+                }
+            });
+        }else {
+            Toast.makeText(this, "Ya no puedes votar", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     //Metodo del dialogo
@@ -152,9 +135,12 @@ public class VotacionesDetalle extends AppCompatActivity {
 
                     }
                 });
-                startActivity(new Intent(VotacionesDetalle.this,Votaciones.class));
-                finish();
+                RespaldoListas.Instancia().CargarListas();
+              //  startActivity(new Intent(VotacionesDetalle.this,Votaciones.class));
+               // finish();
                 Toast.makeText(VotacionesDetalle.this, "Votacion Realizada", Toast.LENGTH_SHORT).show();
+
+                PostVotosUser(Id_Estudiante,Id_Votacion);
             }
         });
 
@@ -166,5 +152,27 @@ public class VotacionesDetalle extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void PostVotosUser(String IdUser,String IdVotacion){
+        VotosModel votosModel = new VotosModel();
+        votosModel.setIdEstudiante(IdUser);
+        votosModel.setIdVotacion(IdVotacion);
+        Call<VotosModel>call = Api.instance().PostVotosUser(votosModel);
+        call.enqueue(new Callback<VotosModel>() {
+            @Override
+            public void onResponse(Call<VotosModel> call, Response<VotosModel> response) {
+                if(response.body()!=null){
+                    Toast.makeText(VotacionesDetalle.this, "No puede Votar de Nuevo", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(VotacionesDetalle.this, "Revisar Conexion", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VotosModel> call, Throwable t) {
+
+            }
+        });
     }
 }

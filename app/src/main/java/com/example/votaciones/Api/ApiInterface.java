@@ -4,6 +4,7 @@ import com.example.votaciones.Model.CandidatoModel;
 import com.example.votaciones.Model.EstudianteModel;
 import com.example.votaciones.Model.UsuariosModel;
 import com.example.votaciones.Model.VotacionesModel;
+import com.example.votaciones.Model.VotosModel;
 
 import java.util.List;
 
@@ -32,6 +33,9 @@ public interface ApiInterface {
 
     @PUT("candidatos/{id}")
     Call<CandidatoModel> PutCandidato(@Path("id") String id,@Body CandidatoModel candidatoModel);
+
+    @POST("votos")
+    Call<VotosModel> PostVotosUser(@Body VotosModel votosModel);
 
    /* @PUT("mercados/{id}")
     Call<MarketModel> update(@Path("id") String id,@Body MarketModel marketModel);
